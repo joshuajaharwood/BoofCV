@@ -17,7 +17,7 @@
 
 VERSION=v0.XX
 git clone --depth 1 -b $VERSION --single-branch --recursive git@github.com:lessthanoptimal/BoofCV.git boofcv
-cd boofcv && ./gradlew autogenerate && rm -rf .git && cd ..;zip -r boofcv-$VERSION-src.zip boofcv
+cd boofcv && ./gradlew autogenerate && rm -rf .git && cd .. && zip -r boofcv-$VERSION-src.zip boofcv
 cd boofcv && ./gradlew createLibraryDirectory && mv boofcv-*-libs .. && cd .. && zip -r boofcv-$VERSION-libs.zip boofcv-$VERSION-libs
 cd boofcv && rm -rf docs/api-web && ./gradlew alljavadocWeb && zip -r api.zip docs/api-web
 
@@ -47,4 +47,4 @@ Update prebuilt applications and demonstrations using https://github.com/lesstha
 
 git clean -fd main && ./gradlew autogenerate && ./gradlew assemble && ./gradlew publish -Dorg.gradle.parallel=false
 
-log onto http://oss.sonatype.org
+log onto https://oss.sonatype.org

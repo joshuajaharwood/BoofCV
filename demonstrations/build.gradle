@@ -6,6 +6,8 @@ dependencies {
 	implementation project(':integration:boofcv-ffmpeg')
 	implementation project(':integration:boofcv-jcodec')
 	implementation project(':integration:boofcv-WebcamCapture')
+
+	implementation("commons-io:commons-io:$commons_io_version")
 }
 
 // Create a jar which contains all the applications

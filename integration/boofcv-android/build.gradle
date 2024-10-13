@@ -64,7 +64,7 @@ dependencies {
 
     implementation "androidx.annotation:annotation:1.7.1"
 
-    annotationProcessor("com.github.bsideup.jabel:jabel-javac-plugin:${project.jabel_version}")
+    annotationProcessor("com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}")
 }
 
 afterEvaluate {

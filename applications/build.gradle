@@ -12,6 +12,7 @@ dependencies {
 	api project(':integration:boofcv-pdf')
 
 	api "args4j:args4j:$args4j_version"
+	implementation("commons-io:commons-io:$commons_io_version")
 }
 
 // Create a jar which contains all the applications

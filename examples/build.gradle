@@ -12,6 +12,8 @@ dependencies {
 	implementation project(':integration:boofcv-jcodec')
 	implementation project(':integration:boofcv-WebcamCapture')
 
+	implementation("commons-io:commons-io:$commons_io_version")
+
 	api("org.reflections:reflections:0.10.2") {
 		exclude group: "org.slf4j"
 		exclude group: "com.google.guava"

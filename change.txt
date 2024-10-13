@@ -7,6 +7,12 @@ Version Meaning: <compatible>.<feature>.<bug fix>
 - Last digit always indicates a bug fix and other minor changes
 
 ---------------------
+Date    : 2024/Oct/05
+Version : 1.1.7
+
+- Fixed backwards compatibility issue in MultiViewIO cause by last release
+
+---------------------
 Date    : 2024/Sep/06
 Version : 1.1.6
 
