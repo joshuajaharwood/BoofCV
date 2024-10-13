@@ -98,7 +98,7 @@ subprojects {
 
     test {
         useJUnitPlatform()
-        reports.html.setRequired(false);
+        reports.html.setRequired(false)
         // Make the error logging verbose to make debugging on CI easier
         testLogging.showStandardStreams = true
         testLogging.exceptionFormat TestExceptionFormat.FULL
@@ -131,10 +131,10 @@ subprojects {
     }
 
     dependencies {
-        api("org.georegression:georegression:0.27.3") { exclude group: 'org.ddogleg' }
-        api("org.ddogleg:ddogleg:0.23.4")
+        api(group: 'org.georegression', name: 'georegression', version: '0.27.3') { exclude group: 'org.ddogleg' }
+        api(group: 'org.ddogleg', name: 'ddogleg', version: '0.23.4')
 
-        api("net.sf.trove4j:trove4j:${project.trove4j_version}")
+        api group: 'net.sf.trove4j', name: 'trove4j', version: project.trove4j_version
 
         compileOnly "org.projectlombok:lombok:${project.lombok_version}"
         compileOnly "org.jetbrains:annotations:$project.jetnull_version" // @Nullable
@@ -144,45 +144,38 @@ subprojects {
         noautoCompileOnly "org.jetbrains:annotations:$project.jetnull_version" // @Nullable
         compileOnly "javax.annotation:jsr250-api:$project.jsr250_version"  // @Generated
 
-        testImplementation("org.junit.jupiter:junit-jupiter-api:$junit_version")
-        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junit_version")
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 
-        experimentalImplementation(project.sourceSets.main.output);
-        
-        project.configurations.experimentalImplementation.extendsFrom(
-                project.configurations.findByName("compileClasspath"),
-                project.configurations.findByName("runtimeClasspath"))
+        experimentalImplementation project.sourceSets.main.output
+        project.configurations.experimentalImplementation.extendsFrom project.configurations.compileClasspath,
+                project.configurations.runtimeClasspath
 
-        testImplementation(project.sourceSets.benchmark.output)
-//        testImplementation project.sourceSets.benchmark.compileClasspath
-//        testImplementation project.sourceSets.benchmark.runtimeClasspath
+        testImplementation project.sourceSets.benchmark.output
+        project.configurations.testImplementation.extendsFrom project.configurations.benchmarkCompileClasspath,
+                project.configurations.benchmarkRuntimeClasspath
 
-        // todo: how to we extendsFrom output?
-        project.configurations.testImplementation.extendsFrom(project.configurations.findByName("benchmarkCompileClasspath"),
-                project.configurations.findByName("benchmarkRuntimeClasspath"))
-//
         benchmarkImplementation project.sourceSets.experimental.output
         benchmarkImplementation project.sourceSets.generate.output
-        benchmarkImplementation project.sourceSets.main.runtimeClasspath
-        benchmarkImplementation project.sourceSets.main.compileClasspath
+        benchmarkImplementation project.sourceSets.main.output
 
-//        project.configurations.benchmarkImplementation.extendsFrom(project.configurations.findByName("compileClasspath"),
-//                project.configurations.findByName("runtimeClasspath"))
+        project.configurations.benchmarkImplementation.extendsFrom project.configurations.compileClasspath,
+                project.configurations.runtimeClasspath
 
-        benchmarkImplementation("org.openjdk.jmh:jmh-core:$jmh_version")
-        benchmarkAnnotationProcessor("org.openjdk.jmh:jmh-generator-annprocess:$jmh_version")
+        benchmarkImplementation "org.openjdk.jmh:jmh-core:$jmh_version"
+        benchmarkAnnotationProcessor "org.openjdk.jmh:jmh-generator-annprocess:$jmh_version"
 
         // needed to use Java 11+ syntax with Java 1.8 byte code
-        annotationProcessor("com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}")
-        noautoAnnotationProcessor("com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}")
-        testAnnotationProcessor("com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}")
-        benchmarkAnnotationProcessor("com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}")
-        generateAnnotationProcessor("com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}")
+        annotationProcessor "com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}"
+        noautoAnnotationProcessor "com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}"
+        testAnnotationProcessor "com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}"
+        benchmarkAnnotationProcessor "com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}"
+        generateAnnotationProcessor "com.pkware.jabel:jabel-javac-plugin:${project.jabel_version}"
 
         annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"  // @Getter @Setter
         noautoAnnotationProcessor "org.projectlombok:lombok:${project.lombok_version}"  // @Getter @Setter
 
-        errorprone("com.google.errorprone:error_prone_core:$project.errorprone_version")
+        errorprone "com.google.errorprone:error_prone_core:$project.errorprone_version"
 
         // even if it's not used you still need to include the dependency
         annotationProcessor "com.uber.nullaway:nullaway:${project.nullaway_version}"
@@ -407,7 +400,8 @@ checkProjectExistsAddToList(':integration:boofcv-javafx', javadocProjects)
 checkProjectExistsAddToList(':integration:boofcv-android', javadocProjects)
 
 // Creates a directory with all the compiled BoofCV jars and the dependencies for main
-task createLibraryDirectory(dependsOn: libraryProjects.collect { [it + ':jar', it + ':sourcesJar'] }.flatten()) {
+tasks.register('createLibraryDirectory') {
+    dependsOn libraryProjects.collect { [it + ':jar', it + ':sourcesJar'] }.flatten()
     doLast {
         // Collects BoofCV jars and external jars
         ext.listJars = files(libraryProjects.collect { project(it).configurations.runtimeClasspath })
@@ -427,7 +421,8 @@ task createLibraryDirectory(dependsOn: libraryProjects.collect { [it + ':jar', i
 }
 
 // Creates a single jar which contains all the subprojects in main and integration
-task oneJarBin(type: Jar, dependsOn: javadocProjects.collect { it + ":compileJava" }) {
+tasks.register('oneJarBin', Jar) {
+    dependsOn javadocProjects.collect { it + ":compileJava" }
     archiveFile.set(file("boofcv-v${project.version}.jar"))
 
     from files(javadocProjects.collect { project(it).sourceSets.main.output }) {
@@ -440,7 +435,8 @@ task oneJarBin(type: Jar, dependsOn: javadocProjects.collect { it + ":compileJav
 def javadocProjectsNoAndroid = javadocProjects.findAll({ !it.contains("android") })
 
 // Generates a global javadoc from all the modules
-task alljavadoc(type: Javadoc, group: "Documentation", dependsOn: javadocProjectsNoAndroid.collect { it + ":compileJava" }) {
+tasks.register('alljavadoc', Javadoc) {
+    dependsOn javadocProjectsNoAndroid.collect { it + ":compileJava" }
     // only include source code in src directory to avoid including 3rd party code which some projects do as a hack
     source = javadocProjectsNoAndroid.collect { project(it).sourceSets.main.allJava } + javadocProjectsNoAndroid.collect { project(it).sourceSets.noauto.allJava }
     classpath = files(javadocProjectsNoAndroid.collect { project(it).sourceSets.main.compileClasspath }) + files(javadocProjectsNoAndroid.collect { project(it).sourceSets.noauto.compileClasspath })
@@ -480,7 +476,7 @@ task alljavadoc(type: Javadoc, group: "Documentation", dependsOn: javadocProject
     }
 }
 
-task alljavadocWeb() {
+tasks.register('alljavadocWeb') {
     doFirst {
         alljavadoc.options.bottom = file('misc/bottom.txt').text
         alljavadoc.destinationDir = file("docs/api-web")
@@ -488,7 +484,7 @@ task alljavadocWeb() {
 }
 alljavadocWeb.finalizedBy(alljavadoc)
 
-task testReport(type: TestReport) {
+tasks.register('testReport', TestReport) {
     getDestinationDirectory().set(file("$buildDir/reports/allTests"))
 
     // Android project has a different testing system so skip it
@@ -498,7 +494,7 @@ task testReport(type: TestReport) {
 // Sanity check to make sure that autogenerate has been called. This is the source of a lot of confusion from users
 project(":main:boofcv-types") {
     // This is the first task that the main source code will depend on
-    tasks.findByName("compileJava").doFirst { task ->
+    tasks.compileJava.doFirst { task ->
         // Determine the sourceSet by looking at the path
         def iterator = task.stableSources.iterator()
         if (!iterator.hasNext()) return
