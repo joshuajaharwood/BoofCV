@@ -496,7 +496,7 @@ task testReport(type: TestReport) {
     getDestinationDirectory().set(file("$buildDir/reports/allTests"))
 
     // Android project has a different testing system so skip it
-    reportOn subprojects.findAll {!it.name.contains("android")}.test
+    getTestResults().from(subprojects.findAll {!it.name.contains("android")}.test)
 }
 
 // Sanity check to make sure that autogenerate has been called. This is the source of a lot of confusion from users
