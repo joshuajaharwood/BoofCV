@@ -3,8 +3,7 @@ dependencies {
     testImplementation project(':main:boofcv-geo')
 }
 
-tasks.register('autogenerateSource', JavaExec) {
-    dependsOn 'generateClasses'
+task(autogenerateSource, dependsOn: 'generateClasses', type: JavaExec) {
     setMainClass('boofcv.GenerateImageProcessing')
     classpath = sourceSets.generate.runtimeClasspath
 }
